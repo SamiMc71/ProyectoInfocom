@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logoinfo.png">
+    <title>Administración de Cuentas</title>
+
+    <link rel="stylesheet" href="../css/admincuentas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../logoinfo.png">
+            <span>INFOCOM TECNOLOGY</span>
+        </div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+            <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+            <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+            <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+            <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+            <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+            <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+            <a href="admincuentas.html" class="menu-item active"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+            <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+
+            <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Administración de Cuentas</h1>
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <span>Administrador</span>
+            </div>
+        </div>
+
+        <div class="table-container" id="pendingAccountsTable">
+            <div class="table-header">
+                <h2>Cuentas Pendientes de Aprobación</h2>
+                <div class="table-actions">
+                    <button class="btn btn-outline" id="refreshPending">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Nombre Completo</th>
+                        <th>Rol Solicitado</th>
+                        <th>Fecha de Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="pendingAccountsBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="table-container" id="allAccountsTable">
+            <div class="table-header">
+                <h2>Todas las Cuentas</h2>
+                <div class="table-actions">
+                    <button class="btn btn-outline" id="refreshAll">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Nombre Completo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Contraseña</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="allAccountsBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="approvalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Aprobar Cuenta</h3>
+                <button class="modal-close" id="modalCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="approvalMessage">¿Estás seguro de que deseas aprobar esta cuenta?</p>
+                <div class="form-group">
+                    <label class="form-label">Asignar Rol</label>
+                    <div class="role-options">
+                        <div class="role-option" data-role="admin">
+                            <input type="radio" name="approvalRole" value="admin" id="approvalRoleAdmin">
+                            <i class="fas fa-user-shield"></i>
+                            <div>Administrador</div>
+                        </div>
+                        <div class="role-option" data-role="soporte">
+                            <input type="radio" name="approvalRole" value="soporte" id="approvalRoleSoporte">
+                            <i class="fas fa-headset"></i>
+                            <div>Soporte</div>
+                        </div>
+                        <div class="role-option" data-role="ventas">
+                            <input type="radio" name="approvalRole" value="ventas" id="approvalRoleVentas">
+                            <i class="fas fa-shopping-cart"></i>
+                            <div>Ventas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="rejectBtn">Rechazar</button>
+                <button class="btn btn-primary" id="approveBtn">Aprobar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editAccountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Cuenta</h3>
+                <button class="modal-close" id="editModalCloseBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editAccountForm">
+                    <div class="form-group">
+                        <label class="form-label" for="editUsername">Usuario</label>
+                        <input type="text" class="form-control" id="editUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editEmail">Email</label>
+                        <input type="email" class="form-control" id="editEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editPassword">Contraseña (dejar en blanco para no cambiar)</label>
+                        <div class="password-container">
+                            <input type="password" class="form-control" id="editPassword" placeholder="Nueva contraseña">
+                            <button type="button" class="toggle-password" id="toggleEditPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rol</label>
+                        <div class="role-options">
+                            <div class="role-option" data-role="admin">
+                                <input type="radio" name="editRole" value="admin" id="editRoleAdmin">
+                                <i class="fas fa-user-shield"></i>
+                                <div>Administrador</div>
+                            </div>
+                            <div class="role-option" data-role="soporte">
+                                <input type="radio" name="editRole" value="soporte" id="editRoleSoporte">
+                                <i class="fas fa-headset"></i>
+                                <div>Soporte</div>
+                            </div>
+                            <div class="role-option" data-role="ventas">
+                                <input type="radio" name="editRole" value="ventas" id="editRoleVentas">
+                                <i class="fas fa-shopping-cart"></i>
+                                <div>Ventas</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancelEditBtn">Cancelar</button>
+                <button class="btn btn-primary" id="saveEditBtn">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Mensaje de notificación</span>
+    </div>
+    <script src="../javascript/auth.js"></script>
+    <script src="../javascript/admincuenta.js"></script>
+</body>
+</html>

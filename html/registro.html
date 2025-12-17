@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Inventario Digital - Registro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/registro.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="left-panel">
+      <div class="logo">
+        <img src="../logoinfo.png" alt="Logo INFOCOM"> 
+        <h1>INFOCOM TECNOLOGY</h1>
+      </div>
+      <h2>Únete Ahora</h2>
+      <p>Accede a todas las funcionalidades de nuestro sistema de inventario digital</p>
+      
+      <ul class="features">
+        <li><i class="fas fa-check-circle"></i> Control de stock en tiempo real</li>
+        <li><i class="fas fa-check-circle"></i> Reportes personalizados</li>
+        <li><i class="fas fa-check-circle"></i> Análisis predictivo</li>
+      </ul>
+    </div>
+
+    <div class="right-panel">
+      <h2>CREAR CUENTA</h2>
+      <div class="icon-user">
+        <i class="fas fa-user-plus"></i>
+      </div>
+      
+      <form id="registerForm" action="../php/register.php" method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fullname">Nombre completo</label>
+            <div class="input-container">
+              <input type="text" id="fullname" name="fullname" placeholder="Tu nombre completo" required>
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="error-message" id="fullname-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <div class="input-container">
+              <input type="email" id="email" name="email" placeholder="ejemplo@empresa.com" required>
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="error-message" id="email-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="username">Usuario</label>
+            <div class="input-container">
+              <input type="text" id="username" name="username" placeholder="Tu usuario" required>
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="error-message" id="username-error"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-container">
+              <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+              <i class="fas fa-lock"></i>
+            </div>
+            <div class="error-message" id="password-error"></div>
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label for="confirm-password">Confirmar contraseña</label>
+          <div class="input-container">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirma tu contraseña" required>
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="error-message" id="confirm-password-error"></div>
+        </div>
+        
+        <div class="form-options">
+          <div class="remember">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">Acepto los términos y condiciones</label>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn">
+          <i class="fas fa-user-plus"></i>
+          Crear Cuenta
+        </button>
+      </form>
+      
+      <div class="login-link">
+        ¿Ya tienes una cuenta? <a href="loginmejorado.html">Inicia sesión aquí</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="approvalModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <h3 class="modal-title">Registro Enviado</h3>
+      <p class="modal-message">
+        Tu solicitud de registro ha sido enviada correctamente. 
+        <strong>Espera a que el administrador apruebe tu cuenta</strong> 
+        para poder acceder al sistema.
+      </p>
+      <button class="modal-btn" id="modalCloseBtn">Entendido</button>
+    </div>
+  </div>
+
+  <div id="notification" class="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notification-text"></span>
+  </div>
+  
+  <script src="../javascript/registro.js"></script>
+</body>
+</html>

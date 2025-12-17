@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Papelera de Reciclaje - INFOCOM</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/admincuentas.css"> 
+  <style>
+    /* Estilos para diferenciar las filas en la papelera */
+    .table-type-producto { border-left: 4px solid var(--success-color); }
+    .table-type-cotizacion { border-left: 4px solid var(--warning-color); }
+    .table-type-servicio { border-left: 4px solid var(--info-color); }
+    .table-type-venta { border-left: 4px solid var(--danger-color); }
+    .table-container { min-height: 400px; }
+    /* Estilos para el badge de tipo (usamos los de roles como base) */
+    .status-badge.role-producto { background: #e8f8f5; color: #1abc9c; }
+    .status-badge.role-cotizacion { background: #fef5e7; color: #f39c12; }
+    .status-badge.role-servicio { background: #e8f4fd; color: #3498db; }
+    .status-badge.role-venta { background: #fdeaea; color: #e74c3c; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png">
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      
+      <a href="papelera.html" class="menu-item active"><i class="fa-solid fa-trash-can"></i><span>Papelera de Reciclaje</span></a>
+      
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="header">
+      <h1>Papelera de Reciclaje</h1>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header">
+            <h2>Elementos Eliminados/Anulados</h2>
+            <div class="table-actions">
+                <select class="btn btn-outline" id="filter-tipo">
+                    <option value="all">Todos los tipos</option>
+                    <option value="producto">Productos Inactivos</option>
+                    <option value="cotizacion">Cotizaciones Eliminadas</option>
+                    <option value="servicio">Servicios Eliminados</option>
+                    <option value="venta">Ventas Anuladas</option>
+                </select>
+                <button class="btn btn-primary" id="refresh-btn">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Actualizar</span>
+                </button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo</th>
+                    <th>Elemento</th>
+                    <th>Fecha Eliminación/Anulación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="papelera-body">
+            </tbody>
+        </table>
+        <div class="table-empty" id="table-empty" style="display: none;">
+            <i class="fa-solid fa-trash-can"></i>
+            <p>La papelera está vacía</p>
+        </div>
+        <div class="table-empty" id="table-loading" style="display: flex;">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Cargando elementos...</p>
+        </div>
+    </div>
+  </div>
+  
+  <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Mensaje de notificación</span>
+  </div>
+  
+  <script src="../javascript/auth.js"></script>
+  <script src="../javascript/papelera.js"></script> 
+</body>
+</html>

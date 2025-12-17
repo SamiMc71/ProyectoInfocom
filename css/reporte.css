@@ -1,0 +1,445 @@
+/* css/reporte.css */
+:root {
+    --primary-color: #27ae60;
+    --primary-dark: #219150;
+    --primary-light: #2ecc71;
+    --sidebar-bg: #ffffff;
+    --sidebar-hover: #f1f9f4;
+    --text-dark: #2c3e50;
+    --text-light: #7f8c8d;
+    --border-color: #e5e8eb;
+    --card-bg: #fff;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', 'Segoe UI', sans-serif; /* MODIFICADO */
+}
+
+body { 
+    display: flex; 
+    min-height: 100vh; 
+    background: #f5f7fa; 
+    color: var(--text-dark); 
+}
+
+/* Sidebar */
+.sidebar { 
+    width: 250px; 
+    background: var(--sidebar-bg); 
+    border-right: 1px solid var(--border-color); 
+    height: 100vh; 
+    position: fixed; 
+    display: flex; 
+    flex-direction: column; 
+    box-shadow: var(--shadow);
+}
+
+.sidebar-header { 
+    padding: 25px 20px; 
+    text-align: center; 
+    font-size: 22px; 
+    font-weight: 700; 
+    color: var(--primary-dark); 
+    border-bottom: 1px solid var(--border-color); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.sidebar-header img {
+    width: 50px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.sidebar-menu { 
+    flex: 1; 
+    padding: 20px 15px; 
+}
+
+.menu-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 14px 15px; 
+    margin: 8px 0; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    color: var(--text-dark); 
+    text-decoration: none; 
+    font-weight: 500;
+}
+
+.menu-item:hover { 
+    background: var(--sidebar-hover); 
+    color: var(--primary-color); 
+    transform: translateX(5px);
+}
+
+.menu-item.active { 
+    background: var(--sidebar-hover); 
+    color: var(--primary-color); 
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* Main content */
+.main-content { 
+    margin-left: 250px; 
+    padding: 30px; 
+    width: calc(100% - 250px); 
+}
+
+.header { 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+}
+
+.header h1 { 
+    font-size: 28px; 
+    font-weight: 600;
+    color: var(--primary-dark);
+}
+
+/* Filtros */
+.filters-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group select, .form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group select:focus, .form-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+}
+
+/* Botones */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+/* Tablas */
+.table-container { 
+    background: var(--card-bg); 
+    padding: 25px; 
+    border-radius: 16px; 
+    box-shadow: var(--shadow); 
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+th, td { 
+    padding: 15px; 
+    border-bottom: 1px solid var(--border-color); 
+    text-align: left; 
+    font-size: 14px; 
+}
+
+th { 
+    background: #f8f9fa; 
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+tr:hover { 
+    background: #f9fafc; 
+}
+
+/* *** SECCIÓN DE BOLETAS MODIFICADA *** */
+.receipts-section {
+    display: none;
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.receipts-section.active {
+    display: block;
+}
+
+.receipts-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* El contenedor .receipt (para la vista web) */
+.receipt {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    background: #fdfdfd;
+    width: 100%;
+    height: auto; /* Altura automática para ajustarse al contenido */
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* Paginación */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 15px 0;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.page-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Acciones */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+}
+
+/* Selectores de fecha */
+.date-range {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.date-range .form-group {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.date-separator {
+    color: var(--text-light);
+    font-weight: bold;
+}
+
+/* *** ESTILOS PARA IMPRESIÓN CORREGIDOS *** */
+@media print {
+    @page {
+        margin: 5mm;
+        size: A4;
+    }
+    
+    body * {
+        visibility: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .receipts-section, .receipts-section * {
+        visibility: visible;
+    }
+    
+    .receipts-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        box-shadow: none;
+        background: white;
+        border: none;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    .receipts-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+        grid-template-rows: auto; /* <<< CORRECCIÓN: Filas automáticas */
+        gap: 5mm; 
+        margin: 0;
+        width: 100%;
+        height: auto; /* <<< CORRECCIÓN: Altura automática */
+    }
+    
+    /* El .receipt es el contenedor de la cuadrícula */
+    .receipt {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: auto !important; /* <<< CORRECCIÓN: Altura automática */
+        padding: 2mm !important;
+        background: white !important;
+        border-radius: 2mm !important;
+        overflow: hidden !important; 
+        
+        /* Propiedad clave para evitar que se corte */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        
+        display: flex !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+    }
+    
+    /* El .ticket es el contenido real (generado por JS) */
+    /* Dejamos que los estilos inline del JS controlen el tamaño */
+    .receipt .ticket {
+        /* No forzamos tamaños aquí, confiamos en los estilos inline del JS */
+        border: none !important; 
+        /* Reducimos la escala general del ticket para que quepa mejor */
+        transform: scale(0.95);
+        transform-origin: top center;
+    }
+
+    /* OCULTAR TODO EXCEPTO LAS BOLETAS */
+    .action-buttons,
+    .pagination,
+    .receipts-title,
+    .sidebar,
+    .header,
+    .filters-container,
+    .table-container {
+        display: none !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+    
+    .sidebar-header span, .menu-item span {
+        display: none;
+    }
+    
+    .sidebar-header {
+        padding: 20px 10px;
+        font-size: 18px;
+    }
+    
+    .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+        padding: 20px;
+    }
+    
+    .filters-container {
+        flex-direction: column;
+    }
+    
+    .date-range {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .date-separator {
+        display: none;
+    }
+    
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .receipts-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        min-height: auto;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+}

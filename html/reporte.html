@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="logoinfo.png">
+    <title>Sistema de Gestión - Reportes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/reporte.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="../logoinfo.png" alt="Logo INFOCOM">
+            <span>INFOCOM TECNOLOGY</span>
+        </div>
+        <div class="sidebar-menu">
+            <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+            <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+            <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+            <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+            <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+            <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+            <a href="reporte.html" class="menu-item active"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+            <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+            <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+            <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <h1>Reportes de Ventas</h1>
+        </div>
+
+        <!-- Sección Generar Reporte -->
+        <div class="table-container">
+            <h2>Generar Reporte</h2>
+            <div class="filters-container">
+                <div class="form-group" style="min-width: 180px;">
+                    <label for="report-type">Tipo de Reporte</label>
+                    <select id="report-type">
+                        <option value="semanal">Reporte Semanal</option>
+                        <option value="mensual">Reporte Mensual</option>
+                    </select>
+                </div>
+                
+                <!-- Selector de mes (para reporte mensual) -->
+                <div class="form-group" style="min-width: 180px;" id="month-selector">
+                    <label for="period">Seleccionar Mes</label>
+                    <input type="month" id="period">
+                </div>
+                
+                <!-- Selector de rango de fechas (para reporte semanal) -->
+                <div class="form-group" style="min-width: 300px; display: none;" id="week-selector">
+                    <label>Seleccionar Semana</label>
+                    <div class="date-range">
+                        <div class="form-group">
+                            <input type="date" id="start-date">
+                        </div>
+                        <span class="date-separator">a</span>
+                        <div class="form-group">
+                            <input type="date" id="end-date">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="generarReporte()">
+                        <i class="fa-solid fa-chart-bar"></i> Generar Reporte
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Reportes Semanales -->
+        <div class="table-container" id="weekly-reports">
+            <h2>Reportes Semanales</h2>
+            <table id="weekly-table">
+                <thead>
+                    <tr>
+                        <th>Semana</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Total</th>
+                        <th>Ventas</th>
+                        <th>Productos Vendidos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="weekly-table-body">
+                    <!-- Datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla de Reportes Mensuales -->
+        <div class="table-container" id="monthly-reports">
+            <h2>Reportes Mensuales</h2>
+            <table id="monthly-table">
+                <thead>
+                    <tr>
+                        <th>Mes</th>
+                        <th>Año</th>
+                        <th>Total</th>
+                        <th>Ventas</th>
+                        <th>Productos Vendidos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="monthly-table-body">
+                    <!-- Datos se cargarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sección de Boletas para Imprimir -->
+        <div class="receipts-section" id="receipts-section">
+            <h2 id="receipts-title" class="no-print receipts-title">Boletas de Venta</h2>
+            
+            <!-- Paginación -->
+            <div class="pagination no-print" id="pagination">
+                <!-- Los botones de página se generarán aquí -->
+            </div>
+            
+            <div class="receipts-container" id="receipts-container">
+                <!-- Las boletas cuadradas se generarán aquí -->
+            </div>
+            
+         <div class="action-buttons no-print">
+    <button class="btn btn-primary" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Imprimir Vista
+    </button>
+    
+    <button class="btn btn-success" onclick="descargarReportePDF()">
+        <i class="fa-solid fa-file-pdf"></i> Descargar PDF
+    </button>
+    
+    <button class="btn btn-success" onclick="descargarReporteExcel()" style="background-color: #1e7e34; border-color: #1c7430;">
+        <i class="fa-solid fa-file-excel"></i> Descargar Excel
+    </button>
+    
+    <button class="btn btn-success" onclick="guardarReporte()">
+        <i class="fa-solid fa-save"></i> Guardar Reporte
+    </button>
+    <button class="btn btn-danger" onclick="cerrarBoletas()">
+        <i class="fa-solid fa-times"></i> Cerrar
+    </button>
+</div>
+        </div>
+    </main>
+    <script src="../javascript/auth.js"></script>
+    <script src="../javascript/reporte.js"></script>
+</body>
+</html>

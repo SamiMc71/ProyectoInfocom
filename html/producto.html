@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Gestión de Productos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/producto.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png" alt="Logo">
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item active"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+      
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header">
+      <h1>Gestión de Productos</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openModal('addProductModal')">
+          <i class="fa-solid fa-plus"></i> Agregar Producto
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar producto por nombre, marca o categoría...">
+        <i class="fa-solid fa-search"></i>
+      </div>
+      <select class="filter-select" id="category-filter">
+        <option value="all">Todas las categorías</option>
+        <option value="laptops">Laptops</option>
+        <option value="Componentes">Componentes</option>
+        <option value="Impresoras">Impresoras</option>
+        <option value="camaras de seguridad">Cámaras de Seguridad</option>
+        <option value="Perifericos">Periféricos</option>
+        <option value="Modem / Repetidores">Modem / Repetidores</option>
+        <option value="Alarmas">Alarmas</option>
+      </select>
+      <select class="filter-select" id="stock-filter">
+        <option value="all">Todo el stock</option>
+        <option value="normal">Stock normal</option>
+        <option value="low">Stock bajo</option>
+        <option value="critical">Stock crítico</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <div class="table-loading" id="table-loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Cargando productos desde la base de datos...</span>
+      </div>
+      <table id="productTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Marca</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Precio (S/)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="productos-body">
+          </tbody>
+      </table>
+      <div class="table-empty" id="table-empty" style="display: none;">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No hay productos registrados en el sistema</p>
+        <button class="btn btn-primary" onclick="openModal('addProductModal')" style="margin-top: 15px;">
+          <i class="fa-solid fa-plus"></i> Agregar Primer Producto
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="viewModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('viewModal')">&times;</span>
+      <h2>Detalle del Producto</h2>
+      <div class="product-detail">
+        <div class="product-image">
+          <img id="view-product-image" src="https://via.placeholder.com/150" alt="Producto">
+        </div>
+        <div class="product-info">
+          <h3 id="view-product-name"></h3>
+          <p><strong>Descripción:</strong> <span id="view-product-description"></span></p>
+          <p><strong>Marca:</strong> <span id="view-product-brand"></span></p>
+          <p><strong>Categoría:</strong> <span id="view-product-category"></span></p>
+          <p><strong>Stock:</strong> <span id="view-product-stock"></span> unidades</p>
+          <p><strong>Precio:</strong> S/ <span id="view-product-price"></span></p>
+          <p><strong>Estado:</strong> <span id="view-product-status" class="stock-badge"></span></p>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="closeModal('viewModal')">Cerrar</button>
+        <button class="btn-print" onclick="imprimirProducto()">
+          <i class="fa-solid fa-print"></i> Imprimir
+        </button>
+        <button class="btn-whatsapp" onclick="enviarProductoPorWhatsApp()">
+          <i class="fa-brands fa-whatsapp"></i> Enviar
+        </button>
+        </div>
+    </div>
+  </div>
+
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('editModal')">&times;</span>
+      <h2>Editar Producto</h2>
+      <form id="edit-form">
+        <input type="hidden" id="edit-product-id">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="edit-product-name" required>
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="edit-product-description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Marca</label>
+          <input type="text" id="edit-product-brand" required>
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="edit-product-category" required>
+            <option value="laptops">Laptops</option>
+            <option value="Componentes">Componentes</option>
+            <option value="Impresoras">Impresoras</option>
+            <option value="camaras de seguridad">Cámaras de Seguridad</option>
+            <option value="Perifericos">Periféricos</option>
+            <option value="Modem / Repetidores">Modem / Repetidores</option>
+            <option value="Alarmas">Alarmas</option>
+            <option value="Monitor">Monitor</option> 
+            <option value="Case/Gabinete">Case/Gabinete</option> 
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="edit-product-stock" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Precio (S/)</label>
+          <input type="number" id="edit-product-price" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>URL de Imagen</label>
+          <input type="text" id="edit-product-image" placeholder="https://ejemplo.com/imagen.jpg">
+        </div>
+        <button type="submit" class="btn-save">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('deleteModal')">&times;</span>
+      <h2>¿Está seguro de eliminar el producto?</h2>
+      <p id="delete-message">Esta acción no se puede deshacer.</p>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancelar</button>
+        <button class="btn-confirm" id="confirm-delete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="addProductModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('addProductModal')">&times;</span>
+      
+      <div class="add-product-header">
+        <h2>Agregar Producto</h2>
+      </div>
+      <form id="add-form">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="add-product-name" required>
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="add-product-description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Marca</label>
+          <input type="text" id="add-product-brand" required>
+        </div>
+        <div class="form-group">
+          <label>Categoría</label>
+          <select id="add-product-category" required>
+            <option value="laptops">Laptops</option>
+            <option value="Componentes">Componentes</option>
+            <option value="Impresoras">Impresoras</option>
+            <option value="camaras de seguridad">Cámaras de Seguridad</option>
+            <option value="Perifericos">Periféricos</option>
+            <option value="Modem / Repetidores">Modem / Repetidores</option>
+            <option value="Alarmas">Alarmas</option>
+            <option value="Monitor">Monitor</option> 
+            <option value="Case/Gabinete">Case/Gabinete</option> 
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="add-product-stock" min="0" required>
+        </div>
+        <div class="form-group">
+          <label>Precio (S/)</label>
+          <input type="number" id="add-product-price" min="0" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <label>URL de Imagen</label>
+          <input type="text" id="add-product-image" placeholder="https://ejemplo.com/imagen.jpg">
+        </div>
+        <button type="submit" class="btn-save">Agregar Producto</button>
+      </form>
+    </div>
+  </div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="../javascript/auth.js"></script>
+  <script src="../javascript/producto.js"></script>
+</body>
+</html>

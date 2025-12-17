@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Clientes - Servicio Técnico y Ventas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/cliente.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png">
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item active"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+      
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header">
+      <h1>Historial de Ventas y Clientes</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="actualizarVentas()">
+          <i class="fa-solid fa-refresh"></i> Actualizar
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar por cliente, documento, producto...">
+        <i class="fa-solid fa-search"></i>
+      </div>
+      <div class="filter-group-super-user" id="sales-super-user-filters" style="display: none;">
+        <select class="filter-select" id="sales-user-filter">
+            <option value="all">Todos los Vendedores</option>
+            </select>
+      </div>
+      <select class="filter-select" id="tipo-comprobante-filter">
+        <option value="all">Todos los comprobantes</option>
+        <option value="BOLETA">Boletas</option>
+        <option value="FACTURA">Facturas</option>
+      </select>
+      <select class="filter-select" id="month-filter">
+        <option value="all">Todos los meses</option>
+        <option value="01">Enero</option>
+        <option value="02">Febrero</option>
+        <option value="03">Marzo</option>
+        <option value="04">Abril</option>
+        <option value="05">Mayo</option>
+        <option value="06">Junio</option>
+        <option value="07">Julio</option>
+        <option value="08">Agosto</option>
+        <option value="09">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+      </select>
+      <select class="filter-select" id="year-filter">
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+        <option value="2028">2028</option>
+        <option value="2029">2029</option>
+        <option value="2030">2030</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <div class="table-loading" id="table-loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Cargando ventas desde la base de datos...</span>
+      </div>
+      <table id="ventas-table" style="display: none;">
+        <thead>
+          <tr>
+            <th>N° Comprobante</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Documento</th>
+            <th>Tipo</th>
+            <th>Productos</th>
+            <th>Cant. Total</th>
+            <th>Subtotal</th>
+            <th>IGV</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="ventas-body">
+          </tbody>
+      </table>
+      <div class="table-empty" id="table-empty" style="display: none;">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No hay ventas registradas en el sistema</p>
+        <p class="empty-subtitle">Realice una venta para ver el historial aquí</p>
+        <button class="btn btn-primary" onclick="window.location.href='nuevaventa.html'" style="margin-top: 15px;">
+          <i class="fa-solid fa-plus"></i> Realizar Primera Venta
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="modal-detalle">
+    <div class="modal-content modal-large">
+      <span class="btn-close" onclick="cerrarModal('modal-detalle')">&times;</span>
+      <h2>Detalle de Venta</h2>
+      <h3 id="detalle-comprobante-numero" style="text-align: center; color: var(--primary-dark); margin-top: -15px; margin-bottom: 25px; font-size: 18px; font-weight: 600;"></h3>
+      <div class="detalle-venta" id="detalle-content">
+        </div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="cerrarModal('modal-detalle')">Cerrar</button>
+        
+        <button class="btn-print" style="background-color: #3498db;" onclick="imprimirBoletaPOS('58')">
+          <i class="fa-solid fa-print"></i> Ticket 58mm
+        </button>
+        <button class="btn-print" style="background-color: #2c3e50;" onclick="imprimirBoletaPOS('80')">
+          <i class="fa-solid fa-print"></i> Ticket 80mm
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-eliminar">
+    <div class="modal-content">
+      <span class="btn-close" onclick="cerrarModal('modal-eliminar')">&times;</span>
+      <h2>¿Está seguro de anular esta venta?</h2>
+      <p id="delete-message">Esta acción cambiará el estado de la venta a "ANULADA".</p>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="cerrarModal('modal-eliminar')">Cancelar</button>
+        <button class="btn-confirm" id="confirm-delete">Anular Venta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-editar">
+    <div class="modal-content modal-editar-content">
+        <span class="btn-close" onclick="cerrarModal('modal-editar')">&times;</span>
+        <h2 class="modal-title">Editar Venta</h2>
+        
+        <form id="edit-form">
+            <div class="form-section">
+                <h3 class="section-title">Datos del Comprobante</h3>
+                <div class="form-row">
+                    <div class="form-group form-group-flex">
+                        <label for="edit-numero-comprobante">N° Comprobante</label>
+                        <input type="text" id="edit-numero-comprobante" class="form-input" readonly style="background:#f0f0f0;">
+                    </div>
+                    <div class="form-group form-group-flex">
+                        <label for="edit-tipo-comprobante">Tipo</label>
+                        <select id="edit-tipo-comprobante" class="form-select">
+                            <option value="BOLETA">BOLETA</option>
+                            <option value="FACTURA">FACTURA</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Datos del Cliente</h3>
+                <div class="form-row">
+                    <div class="form-group form-group-flex">
+                        <label for="edit-tipo-documento">Tipo Doc.</label>
+                        <select id="edit-tipo-documento" class="form-select">
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                            <option value="CE">Carnet Extranjería</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-flex-2">
+                        <label for="edit-numero-documento">N° Documento</label>
+                        <input type="text" id="edit-numero-documento" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-nombres">Nombres / Razón Social</label>
+                    <input type="text" id="edit-nombres" class="form-input" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group form-group-flex">
+                        <label for="edit-telefono">Teléfono</label>
+                        <input type="tel" id="edit-telefono" class="form-input">
+                    </div>
+                    <div class="form-group form-group-flex">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email" class="form-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Productos</h3>
+                <div class="productos-edicion" id="productos-edicion">
+                    </div>
+            </div>
+
+            <div class="form-row-totales">
+                 <div class="total-group">
+                    <label>Subtotal:</label>
+                    <span id="edit-subtotal-display">S/ 0.00</span>
+                </div>
+                 <div class="total-group">
+                    <label>IGV (18%):</label>
+                    <span id="edit-igv-display">S/ 0.00</span>
+                </div>
+                 <div class="total-group total-final">
+                    <label>Total:</label>
+                    <span id="edit-total-display">S/ 0.00</span>
+                </div>
+            </div>
+            
+            <div class="modal-buttons-editar">
+                <button type="button" class="btn btn-cancel" onclick="cerrarModal('modal-editar')">Cancelar</button>
+                <button type="submit" class="btn btn-save">
+                    <i class="fa-solid fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="../javascript/auth.js"></script>
+  <script src="../javascript/cliente.js?v=1.6"></script>
+</body>
+</html>

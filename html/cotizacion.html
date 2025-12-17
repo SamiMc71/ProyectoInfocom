@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Cotizaciones - Servicio Técnico y Ventas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../css/cotizacion.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png" >
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item active"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header">
+      <h1>Gestión de Cotizaciones</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openModal('addQuotationModal')">
+          <i class="fa-solid fa-plus"></i> Nueva Cotización
+        </button>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Buscar por cliente, número o producto...">
+        <i class="fa-solid fa-search"></i>
+      </div>
+      <select class="filter-select" id="status-filter">
+        <option value="all">Todos los estados</option>
+        <option value="pending">Pendiente</option>
+        <option value="approved">Aprobada</option>
+        <option value="rejected">Rechazada</option>
+      </select>
+      <select class="filter-select" id="date-filter">
+        <option value="all">Todas las fechas</option>
+        <option value="today">Hoy</option>
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <table id="quotationsTable">
+        <thead>
+          <tr>
+            <th>N° Cotización</th>
+            <th>Cliente</th>
+            <th>Documento</th>
+            <th>Teléfono</th>
+            <th>Fecha</th>
+            <th>Total (S/)</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="quotations-body">
+          </tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="modal" id="viewModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('viewModal')">&times;</span>
+      <h2>Detalle de Cotización</h2>
+      <div class="quotation-detail">
+        <div class="quotation-header">
+          <div class="client-info">
+            <h3>Información del Cliente</h3>
+            <p><strong>Nombre:</strong> <span id="view-client-name"></span></p>
+            <p><strong>Documento:</strong> <span id="view-client-doc"></span></p>
+            <p><strong>Teléfono:</strong> <span id="view-client-phone"></span></p>
+          </div>
+          <div class="quotation-info">
+            <h3>Información de Cotización</h3>
+            <p><strong>N°:</strong> <span id="view-quotation-number"></span></p>
+            <p><strong>Fecha:</strong> <span id="view-quotation-date"></span></p>
+            <p><strong>Estado:</strong> <span id="view-quotation-status" class="status-badge"></span></p>
+          </div>
+        </div>
+
+        <h3>Productos Cotizados</h3>
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Marca</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="view-products-body">
+          </tbody>
+          <tfoot>
+            <tr class="summary-row">
+              <td colspan="4" class="text-right">Subtotal:</td>
+              <td class="text-right">S/ <span id="view-subtotal-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row">
+              <td colspan="4" class="text-right">IGV (18%):</td>
+              <td class="text-right">S/ <span id="view-igv-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row total-row">
+              <td colspan="4" class="text-right">Total:</td>
+              <td class="text-right">S/ <span id="view-total-amount">0.00</span></td>
+            </tr>
+          </tfoot>
+          </table>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="closeModal('viewModal')">Cerrar</button>
+        <button class="btn-print" onclick="imprimirCotizacion()">
+          <i class="fa-solid fa-print"></i> Imprimir
+        </button>
+        
+        <button class="btn-whatsapp" onclick="enviarCotizacionPorWhatsApp()">
+          <i class="fa-brands fa-whatsapp"></i> Enviar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('editModal')">&times;</span>
+      <h2>Editar Cotización</h2>
+      <form id="edit-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo Documento</label>
+            <select id="edit-doc-type" required>
+              <option value="DNI">DNI</option>
+              <option value="RUC">RUC</option>
+              <option value="CE">Carnet Extranjería</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número Documento</label>
+            <input type="text" id="edit-doc-number" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombres Completos</label>
+            <input type="text" id="edit-client-name" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" id="edit-client-phone" required>
+          </div>
+        </div>
+
+        <div class="add-product-section">
+          <h3>Productos</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Buscar Producto</label>
+              <div class="searchable-select" id="edit-product-search-container">
+                <input type="text" id="edit-product-search" placeholder="Escriba para buscar productos...">
+                <div class="dropdown" id="edit-product-dropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <input type="number" id="edit-product-quantity" min="1" value="1" class="product-quantity">
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+              <button type="button" class="btn btn-primary" onclick="agregarProductoEdicion()">
+                <i class="fa-solid fa-plus"></i> Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Marca</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="edit-products-body">
+          </tbody>
+          <tfoot>
+            <tr class="summary-row">
+              <td colspan="5">Subtotal:</td>
+              <td class="text-right">S/ <span id="edit-subtotal-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row">
+              <td colspan="5">IGV (18%):</td>
+              <td class="text-right">S/ <span id="edit-igv-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row total-row">
+              <td colspan="5">Total:</td>
+              <td class="text-right">S/ <span id="edit-total-amount">0.00</span></td>
+            </tr>
+          </tfoot>
+          </table>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="edit-quotation-status" required>
+            <option value="pending">Pendiente</option>
+            <option value="approved">Aprobada</option>
+            <option value="rejected">Rechazada</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-save">Guardar Cambios</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('deleteModal')">&times;</span>
+      <h2>¿Está seguro de eliminar la cotización?</h2>
+      <p id="delete-message">Esta acción no se puede deshacer.</p>
+      <div class="modal-buttons">
+        <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancelar</button>
+        <button class="btn-confirm" id="confirm-delete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="addQuotationModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('addQuotationModal')">&times;</span>
+      <h2>Nueva Cotización</h2>
+      <form id="add-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo Documento</label>
+            <select id="add-doc-type" required>
+              <option value="DNI">DNI</option>
+              <option value="RUC">RUC</option>
+              <option value="CE">Carnet Extranjería</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Número Documento</label>
+            <input type="text" id="add-doc-number" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombres Completos</label>
+            <input type="text" id="add-client-name" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" id="add-client-phone" required>
+          </div>
+        </div>
+
+        <div class="add-product-section">
+          <h3>Agregar Productos</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Buscar Producto</label>
+              <div class="searchable-select" id="add-product-search-container">
+                <input type="text" id="add-product-search" placeholder="Escriba para buscar productos...">
+                <div class="dropdown" id="add-product-dropdown"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <input type="number" id="add-product-quantity" min="1" value="1" class="product-quantity">
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end;">
+              <button type="button" class="btn btn-primary" onclick="agregarProducto()">
+                <i class="fa-solid fa-plus"></i> Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <table class="products-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Marca</th>
+              <th>Cantidad</th>
+              <th>Precio Unit.</th>
+              <th>Subtotal</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="add-products-body">
+          </tbody>
+          <tfoot>
+            <tr class="summary-row">
+              <td colspan="5">Subtotal:</td>
+              <td class="text-right">S/ <span id="add-subtotal-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row">
+              <td colspan="5">IGV (18%):</td>
+              <td class="text-right">S/ <span id="add-igv-amount">0.00</span></td>
+            </tr>
+            <tr class="summary-row total-row">
+              <td colspan="5">Total:</td>
+              <td class="text-right">S/ <span id="add-total-amount">0.00</span></td>
+            </tr>
+          </tfoot>
+          </table>
+
+        <button type="submit" class="btn-save">Crear Cotización</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="../javascript/auth.js"></script>
+  <script src="../javascript/cotizacion.js"></script>
+</body>
+</html>

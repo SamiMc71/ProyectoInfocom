@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Panel de Control - INFOCOM TECNOLOGY</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+
+  <div id="welcome-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <span class="modal-close" id="modal-close-btn">&times;</span>
+      <i class="fa-solid fa-hand-sparkles"></i>
+      <h2 id="welcome-title">¡Bienvenido!</h2>
+      <p id="welcome-message">Que tengas un excelente día de trabajo.</p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png" alt="Logo Infocom">
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item active"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header">
+      <h1>Panel de Control</h1>
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">--</div>
+        <div>
+          <div style="font-weight: 500;" id="user-name">Cargando...</div>
+          <div style="font-size: 13px; color: var(--text-light);" id="user-role">Cargando...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <h2 id="clients-today">0</h2>
+        <p>Nuevos Clientes (Hoy)</p>
+      </div>
+      <div class="stat-card">
+        <h2 id="products-sold">0</h2>
+        <p>Productos Vendidos (Hoy)</p>
+      </div>
+      <div class="stat-card">
+        <h2 id="income-today">S/ 0.00</h2>
+        <p>Ingresos Generados (Hoy)</p>
+      </div>
+      <div class="stat-card">
+        <h2 id="quotations-today">0</h2>
+        <p>Cotizaciones (Hoy)</p>
+      </div>
+      <div class="stat-card">
+        <h2 id="services-today">0</h2>
+        <p>Servicios (Hoy)</p>
+      </div>
+    </div>
+
+    <div class="content-grid">
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Ventas de Hoy</h2>
+          <div class="table-actions">
+            <button class="btn btn-primary" id="refresh-btn">
+              <i class="fa-solid fa-rotate"></i> Actualizar
+            </button>
+          </div>
+        </div>
+        <div class="table-loading" id="table-loading">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <span>Cargando ventas...</span>
+        </div>
+        <table id="sales-table" style="display: none;">
+          <thead>
+            <tr>
+              <th>Comprobante</th>
+              <th>Cliente</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="sales-table-body">
+            </tbody>
+        </table>
+        <div class="table-empty" id="table-empty" style="display: none;">
+          <i class="fa-solid fa-inbox"></i>
+          <p>No hay ventas registradas hoy</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div class="table-header">
+          <h2>Servicios de Hoy</h2>
+          </div>
+        <div class="table-loading" id="services-table-loading">
+          <i class="fa-solid fa-spinner fa-spin"></i>
+          <span>Cargando servicios...</span>
+        </div>
+        <table id="services-table" style="display: none;">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Equipo</th>
+              <th>Estado</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="services-table-body">
+            </tbody>
+        </table>
+        <div class="table-empty" id="services-table-empty" style="display: none;">
+          <i class="fa-solid fa-inbox"></i>
+          <p>No hay servicios registrados hoy</p>
+          
+        </div>
+      </div>
+
+    </div> </main>
+    <script src="../javascript/auth.js"></script>
+  <script src="../javascript/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test de Conexión</title>
+</head>
+<body>
+    <h1>Test de Conexión al Servidor</h1>
+    <button onclick="testConnection()">Probar Conexión</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                resultDiv.innerHTML = '🔄 Probando conexión...';
+                
+                const response = await fetch('php/register.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullname: 'Test User',
+                        email: 'test@test.com',
+                        username: 'testuser',
+                        password: '123456',
+                        role: 'ventas'
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.innerHTML = `✅ Conexión exitosa:<br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error de conexión:<br>${error.message}`;
+            }
+        }
+        
+        // Probar automáticamente al cargar
+        testConnection();
+    </script>
+</body>
+</html>

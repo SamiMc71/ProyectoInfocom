@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logoinfo.png">
+  <title>Nueva Venta - Servicio Técnico y Ventas</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/nuevaventa.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="../logoinfo.png" alt="Logo">
+      <span>INFOCOM TECNOLOGY</span>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html" class="menu-item"><i class="fa-solid fa-chart-line"></i><span>Panel de Control</span></a>
+      <a href="cliente.html" class="menu-item"><i class="fa-solid fa-users"></i><span>Ventas</span></a>
+      <a href="servicios.html" class="menu-item"><i class="fa-solid fa-gear"></i><span>Servicios Registrados</span></a>
+      <a href="producto.html" class="menu-item"><i class="fa-solid fa-box"></i><span>Productos</span></a>
+      <a href="cotizacion.html" class="menu-item"><i class="fa-solid fa-file-contract"></i><span>Cotizaciones</span></a>
+      <a href="nuevaventa.html" class="menu-item active"><i class="fa-solid fa-plus-circle"></i><span>Nueva Venta</span></a>
+      <a href="reporte.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i><span>Generador de reportes</span></a>
+      <a href="admincuentas.html" class="menu-item"><i class="fas fa-user-cog"></i><span>Administración de Cuentas</span></a>
+      <a href="papelera.html" class="menu-item"><i class="fa-solid fa-trash-can"></i><span>Papelera</span></a>
+      <a href="#" class="menu-item" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="header">
+      <h1>Nueva Venta</h1>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="limpiarCarrito()">
+          <i class="fa-solid fa-trash"></i> Limpiar Todo
+        </button>
+      </div>
+    </div>
+
+    <div class="sales-container">
+      <div class="products-section">
+        <div class="search-box">
+          <input type="text" id="catalogSearch" placeholder="Buscar productos...">
+          <i class="fa-solid fa-search"></i>
+        </div>
+        <div class="filters" id="filtersProductos">
+          <select id="categoriaFilter">
+            <option value="">Todas las categorías</option>
+          </select>
+          <select id="marcaFilter">
+            <option value="">Todas las marcas</option>
+          </select>
+        </div>
+        <div class="products-grid" id="catalogGrid">
+          <div class="loading">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Cargando catálogo...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-section">
+        <div class="cart-header">
+          <h3><i class="fa-solid fa-cart-shopping"></i> Carrito de Venta</h3>
+          <span id="cartCount">0 items</span>
+        </div>
+        <div class="cart-items" id="cartItems">
+          <div class="empty-cart">
+            <i class="fa-solid fa-cart-plus"></i>
+            <p>El carrito está vacío</p>
+          </div>
+        </div>
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Subtotal:</span> <span>S/ <span id="subtotal">0.00</span></span>
+          </div>
+          <div class="summary-row">
+            <span>IGV (18%):</span> <span>S/ <span id="igv">0.00</span></span>
+          </div>
+          <div class="summary-row total-final">
+            <span>Total:</span> <span>S/ <span id="total">0.00</span></span>
+          </div>
+          <button class="btn-checkout" onclick="openModal('invoiceModal')" disabled id="checkoutBtn">
+            <i class="fa-solid fa-receipt"></i> Generar Comprobante
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="invoiceModal">
+    <div class="modal-content">
+      <span class="btn-close" onclick="closeModal('invoiceModal')">&times;</span>
+      <h2>Generar Comprobante de Venta</h2>
+      <h3 id="numeroComprobanteDisplay" class="text-warning" style="text-align: center; margin-bottom: 20px;">N°: PENDIENTE</h3>
+      
+      <form id="invoiceForm">
+        <div class="form-section">
+          <h3>Datos del Cliente</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tipo Documento *</label>
+              <select id="docType" required onchange="actualizarTipoDocumento()">
+                <option value="DNI">DNI</option>
+                <option value="RUC">RUC</option>
+                <option value="CE">Carnet Extranjería</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Número Documento *</label>
+              <input type="text" id="docNumber" required maxlength="11" onblur="buscarCliente()">
+              <div class="form-help" id="docHelp"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombres / Razón Social *</label>
+              <input type="text" id="clientName" required>
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="text" id="clientPhone" maxlength="9">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Tipo de Comprobante</h3>
+            <div class="comprobante-options" style="display: flex; gap: 10px; border: 1px solid #e5e8eb; border-radius: 8px; padding: 5px; background-color: #f8f9fa;">
+                <input type="radio" name="comprobanteTipo" value="BOLETA" id="comprobanteBoleta" checked style="display: none;">
+                <label for="comprobanteBoleta" style="flex: 1; text-align: center; padding: 8px; cursor: pointer;">Boleta</label>
+                
+                <input type="radio" name="comprobanteTipo" value="FACTURA" id="comprobanteFactura" style="display: none;">
+                <label for="comprobanteFactura" style="flex: 1; text-align: center; padding: 8px; cursor: pointer;">Factura</label>
+            </div>
+        </div>
+        
+        <div class="form-section">
+          <h3>Detalle de Venta</h3>
+          <div class="table-container">
+            <table class="products-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th width="80">Cant.</th>
+                  <th width="100">P. Unit.</th>
+                  <th width="100">Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="invoiceProducts"></tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" style="text-align: right;">Subtotal:</td>
+                  <td>S/ <span id="modalSubtotal">0.00</span></td>
+                  <td></td>
+                </tr>
+                <tr id="modalIgvRow" style="display: none;">
+                  <td colspan="3" style="text-align: right;">IGV (18%):</td>
+                  <td>S/ <span id="modalIgv">0.00</span></td>
+                  <td></td>
+                </tr>
+                <tr class="total-row">
+                  <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+                  <td style="font-weight: bold;">S/ <span id="modalTotal">0.00</span></td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-buttons" style="display: flex; align-items: center; justify-content: space-between;">
+          <button type="button" class="btn-cancel" onclick="closeModal('invoiceModal')">Cancelar</button>
+          <div style="display: flex; gap: 10px;">
+              <button type="button" class="btn-print" style="background-color: #3498db;" onclick="imprimirBoletaPOS('58')">
+                <i class="fa-solid fa-print"></i> Ticket 58mm
+              </button>
+              <button type="button" class="btn-print" style="background-color: #2c3e50;" onclick="imprimirBoletaPOS('80')">
+                <i class="fa-solid fa-print"></i> Ticket 80mm
+              </button>
+              <button type="submit" class="btn-save">
+                <i class="fa-solid fa-save"></i> Guardar Venta
+              </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .comprobante-options input[type="radio"]:checked + label {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 6px;
+    }
+    .text-warning { color: var(--warning-color); }
+    .text-success { color: var(--success-color); }
+  </style>
+  
+  <script src="../javascript/auth.js"></script>
+  <script src="../javascript/nuevaventa.js"></script> 
+</body>
+</html>
